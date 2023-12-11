@@ -1,7 +1,6 @@
 import asyncHandler from "../middlewares/asyncHandler.js"
 import Product from "../models/product.js"
 
-
 // @desc 
 // @route GET /api/products
 const getProducts = asyncHandler(async(req,res)=>{
