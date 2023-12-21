@@ -1,4 +1,4 @@
-import asyncHandler from '../middleware/asyncHandler.js';
+import asyncHandler from '../middlewares/asyncHandler.js';
 import Order from '../models/order.js';
 import Product from '../models/product.js';
 import { calcPrices } from '../utils/calcPrices.js';
@@ -8,7 +8,10 @@ import { verifyPayPalPayment, checkIfNewTransaction } from '../utils/paypal.js';
 // @route   POST /api/orders
 // @access  Private
 const addOrderItems = asyncHandler(async (req, res) => {
-  const { orderItems, shippingAddress, paymentMethod } = req.body;
+  console.log('addOrderItems')
+  const { orderItems, shippingAddresses, paymentMethod } = req.body;
+
+  
 
   if (orderItems && orderItems.length === 0) {
     res.status(400);
@@ -44,7 +47,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
     const order = new Order({
       orderItems: dbOrderItems,
       user: req.user._id,
-      shippingAddress,
+      shippingAddresses,
       paymentMethod,
       itemsPrice,
       taxPrice,
@@ -52,7 +55,10 @@ const addOrderItems = asyncHandler(async (req, res) => {
       totalPrice,
     });
 
+
     const createdOrder = await order.save();
+
+    console.log(createdOrder)
 
     res.status(201).json(createdOrder);
   }
@@ -70,6 +76,7 @@ const getMyOrders = asyncHandler(async (req, res) => {
 // @route   GET /api/orders/:id
 // @access  Private
 const getOrderById = asyncHandler(async (req, res) => {
+  console.log(req.params.id)
   const order = await Order.findById(req.params.id).populate(
     'user',
     'name email'
